@@ -34,15 +34,3 @@ Please put the downloaded video under the path: `data/activitynet-1.3/raw_data/`
 You can download the raw video from [official website](https://docs.google.com/forms/d/e/1FAIpQLSdxhNVeeSCwB2USAfeNWCaI9saVT6i2hpiiizVYfa3MsTyamg/viewform), which provides 7-day access for downloading.
 
 **[Update]** We have recently added a processed version of the ActivityNet-v1.3 videos to the folders above, named `Anet_videos_15fps_short256.zip`. The video has been converted by ffmpeg to 15 fps, and the shorter side of the video is resized to 256 pixels. In this codebase, all end-to-end ActivityNet experiments are based on this data.
-
-## Citation
-
-```BibTeX
-@article{Heilbron2015ActivityNetAL,
-  title={ActivityNet: A large-scale video benchmark for human activity understanding},
-  author={Fabian Caba Heilbron and Victor Escorcia and Bernard Ghanem and Juan Carlos Niebles},
-  journal={2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-  year={2015},
-  pages={961-970}
-}
-```

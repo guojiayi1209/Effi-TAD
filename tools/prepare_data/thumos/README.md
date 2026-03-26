@@ -36,15 +36,3 @@ Please put the downloaded video under the path: `data/thumos-14/raw_data/`.
 
 You can download the raw video from [official website](https://www.crcv.ucf.edu/THUMOS14/download.html), or download from this [Google Drive](https://drive.google.com/file/d/1oI1_xNpQ1yIUT92rlXuaqnvOzHXxMeui/view?usp=sharing).
 
-## Citation
-
-```BibTeX
-@misc{THUMOS14,
-    author = {Jiang, Y.-G. and Liu, J. and Roshan Zamir, A. and Toderici, G. and Laptev,
-    I. and Shah, M. and Sukthankar, R.},
-    title = {{THUMOS} Challenge: Action Recognition with a Large
-    Number of Classes},
-    howpublished = "\url{http://crcv.ucf.edu/THUMOS14/}",
-    Year = {2014}
-}
-```

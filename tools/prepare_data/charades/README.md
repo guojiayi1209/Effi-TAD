@@ -31,16 +31,3 @@ Please put the downloaded video under the path: `data/charades/raw_data/`.
 You can download the raw video from [official website](https://prior.allenai.org/projects/charades), and then convert it to 30 fps.
 
 We also provide the converted videos with 30 fps at [Google Drive](https://drive.google.com/file/d/10NiCMo5KJcTo0nCr2_hUYC1V4nzP06Eq/view?usp=sharing).
-
-## Citation
-
-```BibTeX
-@inproceedings{sigurdsson2016hollywood,
-  title={Hollywood in homes: Crowdsourcing data collection for activity understanding},
-  author={Sigurdsson, Gunnar A and Varol, G{\"u}l and Wang, Xiaolong and Farhadi, Ali and Laptev, Ivan and Gupta, Abhinav},
-  booktitle={Computer Vision--ECCV 2016: 14th European Conference, Amsterdam, The Netherlands, October 11--14, 2016, Proceedings, Part I 14},
-  pages={510--526},
-  year={2016},
-  organization={Springer}
-}
-```
