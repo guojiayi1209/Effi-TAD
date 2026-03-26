@@ -1,0 +1,1435 @@
+2025-12-09 20:55:47 Train INFO: Using torch version: 2.0.0+cu118, CUDA version: 11.8
+2025-12-09 20:55:48 Train INFO: Config: 
+annotation_path = '/root/autodl-tmp/adatad/data/charades/annotations/charades.json'
+block_list = None
+chunk_num = 32
+class_map = '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt'
+data_path = '/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps'
+dataset = dict(
+    test=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='sliding_window',
+                num_clips=1,
+                scale_factor=1,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(keys=[
+                'imgs',
+            ], type='ConvertToTensor'),
+            dict(inputs='imgs', keys=[
+                'masks',
+            ], type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='testing',
+        test_mode=True,
+        type='EpicKitchensSlidingDataset',
+        window_overlap_ratio=0.5,
+        window_size=512),
+    train=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                crop_ratio=[
+                    0.9,
+                    1.0,
+                ],
+                method='random_trunc',
+                num_clips=1,
+                scale_factor=1,
+                trunc_len=512,
+                trunc_thresh=0.5,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                182,
+            ), type='mmaction.Resize'),
+            dict(type='mmaction.RandomResizedCrop'),
+            dict(keep_ratio=False, scale=(
+                160,
+                160,
+            ), type='mmaction.Resize'),
+            dict(flip_ratio=0.5, type='mmaction.Flip'),
+            dict(transforms='default', type='mmaction.ImgAug'),
+            dict(type='mmaction.ColorJitter'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='training',
+        type='EpicKitchensPaddingDataset'),
+    val=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='sliding_window',
+                num_clips=1,
+                scale_factor=1,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='testing',
+        type='EpicKitchensSlidingDataset',
+        window_overlap_ratio=0.25,
+        window_size=512))
+evaluation = dict(
+    ground_truth_filename=
+    '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+    subset='testing',
+    tiou_thresholds=[
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+    ],
+    type='mAP')
+inference = dict(load_from_raw_predictions=False, save_raw_prediction=False)
+model = dict(
+    backbone=dict(
+        backbone=dict(
+            adapter_index=[
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+            ],
+            depth=12,
+            drop_path_rate=0.1,
+            embed_dims=768,
+            img_size=224,
+            mlp_ratio=4,
+            norm_cfg=dict(eps=1e-06, type='LN'),
+            num_frames=16,
+            num_heads=12,
+            patch_size=16,
+            qkv_bias=True,
+            return_feat_map=True,
+            total_frames=512,
+            type='VisionTransformerAdapter',
+            with_cp=True),
+        custom=dict(
+            freeze_backbone=False,
+            norm_eval=False,
+            post_processing_pipeline=[
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='b n c t h w -> b c t',
+                    reduction='mean',
+                    type='Reduce'),
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='(b t1) c t -> b c (t1 t)',
+                    t1=32,
+                    type='Rearrange'),
+                dict(keys=[
+                    'feats',
+                ], size=512, type='Interpolate'),
+            ],
+            pre_processing_pipeline=[
+                dict(
+                    keys=[
+                        'frames',
+                    ],
+                    ops='b n c (t1 t) h w -> (b t1) n c t h w',
+                    t1=32,
+                    type='Rearrange'),
+            ],
+            pretrain=
+            'pretrained/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth'
+        ),
+        data_preprocessor=dict(
+            format_shape='NCTHW',
+            mean=[
+                123.675,
+                116.28,
+                103.53,
+            ],
+            std=[
+                58.395,
+                57.12,
+                57.375,
+            ],
+            type='mmaction.ActionDataPreprocessor'),
+        type='mmaction.Recognizer3D'),
+    neck=dict(
+        in_channels=512, num_levels=8, out_channels=512, type='FPNIdentity'),
+    projection=dict(
+        arch=(
+            2,
+            2,
+            7,
+        ),
+        attn_cfg=dict(n_head=4, n_mha_win_size=-1),
+        conv_cfg=dict(kernel_size=3, proj_pdrop=0.0),
+        in_channels=768,
+        input_pdrop=0.3,
+        max_seq_len=512,
+        norm_cfg=dict(type='LN'),
+        out_channels=512,
+        path_pdrop=0.1,
+        transformer1d_rel_pos_cfg=dict(
+            encoder_layer_cfg=dict(dim=768, drop_path=0.1, num_heads=6),
+            in_channels=768,
+            num_layers=3,
+            out_channels=768),
+        type='Conv1DTransformerProj',
+        use_abs_pe=True),
+    rpn_head=dict(
+        boundary_kernel_size=3,
+        center_sample='radius',
+        center_sample_radius=1.5,
+        cls_prior_prob=0.01,
+        feat_channels=512,
+        in_channels=512,
+        iou_weight_power=0.2,
+        label_smoothing=0.0,
+        loss=dict(
+            cls_loss=dict(type='FocalLoss'),
+            iou_rate=dict(type='GIOULoss'),
+            reg_loss=dict(type='DIOULoss')),
+        loss_normalizer=100,
+        loss_normalizer_momentum=0.9,
+        num_bins=16,
+        num_classes=157,
+        num_convs=2,
+        prior_generator=dict(
+            regression_range=[
+                (
+                    0,
+                    4,
+                ),
+                (
+                    4,
+                    8,
+                ),
+                (
+                    8,
+                    16,
+                ),
+                (
+                    16,
+                    32,
+                ),
+                (
+                    32,
+                    64,
+                ),
+                (
+                    64,
+                    128,
+                ),
+                (
+                    128,
+                    256,
+                ),
+                (
+                    256,
+                    10000,
+                ),
+            ],
+            strides=[
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+                64,
+                128,
+            ],
+            type='PointGenerator'),
+        type='TriDetHead'),
+    type='ActionFormer')
+optimizer = dict(
+    backbone=dict(
+        custom=[
+            dict(lr=0.0004, name='adapter', weight_decay=0.05),
+        ],
+        exclude=[
+            'backbone',
+        ],
+        lr=0,
+        weight_decay=0),
+    lr=0.0001,
+    paramwise=True,
+    type='AdamW',
+    weight_decay=0.05)
+post_processing = dict(
+    nms=dict(
+        max_seg_num=1000,
+        multiclass=True,
+        sigma=0.3,
+        use_soft_nms=True,
+        voting_thresh=0.7),
+    pre_nms_thresh=0.001,
+    pre_nms_topk=2000,
+    save_dict=False)
+scale_factor = 1
+scheduler = dict(
+    max_epoch=20, type='LinearWarmupCosineAnnealingLR', warmup_epoch=5)
+solver = dict(
+    amp=True,
+    clip_grad_norm=1,
+    ema=True,
+    fp16_compress=True,
+    static_graph=True,
+    test=dict(batch_size=16, num_workers=4),
+    train=dict(batch_size=16, num_workers=4),
+    val=dict(batch_size=16, num_workers=4))
+window_size = 512
+work_dir = 'exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/'
+workflow = dict(
+    checkpoint_interval=1,
+    logging_interval=200,
+    val_eval_interval=1,
+    val_loss_interval=-1,
+    val_start_epoch=7)
+
+2025-12-09 20:55:49 Train INFO: training subset: 7811 videos
+2025-12-09 20:56:29 Train INFO: testing subset: 1814 videos, truncated as 1814 windows.
+2025-12-09 20:56:48 Train INFO: testing subset: 1814 videos, truncated as 1815 windows.
+2025-12-09 20:57:13 Train INFO: Using DDP with total 2 GPUS...
+2025-12-09 20:57:13 Train INFO: Using FP16 compression ...
+2025-12-09 20:57:13 Train INFO: Using Model EMA...
+2025-12-09 20:57:13 Train INFO: Using Automatic Mixed Precision...
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.gamma
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.bias
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.weight
+2025-12-09 20:57:13 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.bias
+2025-12-09 20:57:14 Train INFO: 
+Final optimizer groups:
+2025-12-09 20:57:14 Train INFO: Group 0: lr=0.0004, weight_decay=0.05, param_count=108
+2025-12-09 20:57:14 Train INFO: Group 1: lr=0.0001, weight_decay=0.05, param_count=107
+2025-12-09 20:57:14 Train INFO: Group 2: lr=0.0001, weight_decay=0.0, param_count=237
+2025-12-09 20:57:14 Train INFO: Training Starts...
+
+2025-12-09 20:57:14 Train INFO: [Train]: Epoch 0 started
+2025-12-09 23:43:18 Train INFO: Using torch version: 2.0.0+cu118, CUDA version: 11.8
+2025-12-09 23:43:20 Train INFO: Config: 
+annotation_path = '/root/autodl-tmp/adatad/data/charades/annotations/charades.json'
+block_list = None
+chunk_num = 32
+class_map = '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt'
+data_path = '/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps'
+dataset = dict(
+    test=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='sliding_window',
+                num_clips=1,
+                scale_factor=1,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(keys=[
+                'imgs',
+            ], type='ConvertToTensor'),
+            dict(inputs='imgs', keys=[
+                'masks',
+            ], type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='testing',
+        test_mode=True,
+        type='EpicKitchensSlidingDataset',
+        window_overlap_ratio=0.5,
+        window_size=512),
+    train=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                crop_ratio=[
+                    0.9,
+                    1.0,
+                ],
+                method='random_trunc',
+                num_clips=1,
+                scale_factor=1,
+                trunc_len=512,
+                trunc_thresh=0.5,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                182,
+            ), type='mmaction.Resize'),
+            dict(type='mmaction.RandomResizedCrop'),
+            dict(keep_ratio=False, scale=(
+                160,
+                160,
+            ), type='mmaction.Resize'),
+            dict(flip_ratio=0.5, type='mmaction.Flip'),
+            dict(transforms='default', type='mmaction.ImgAug'),
+            dict(type='mmaction.ColorJitter'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='training',
+        type='EpicKitchensPaddingDataset'),
+    val=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+        block_list=None,
+        class_map=
+        '/root/autodl-tmp/adatad/data/charades/annotations/category_idx.txt',
+        data_path='/root/autodl-tmp/adatad/data/charades/Charades_v1_480_30fps',
+        feature_stride=4,
+        filter_gt=False,
+        fps=30,
+        offset_frames=0,
+        pipeline=[
+            dict(format='mp4', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='sliding_window',
+                num_clips=1,
+                scale_factor=1,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        sample_stride=1,
+        subset_name='testing',
+        type='EpicKitchensSlidingDataset',
+        window_overlap_ratio=0.25,
+        window_size=512))
+evaluation = dict(
+    ground_truth_filename=
+    '/root/autodl-tmp/adatad/data/charades/annotations/charades.json',
+    subset='testing',
+    tiou_thresholds=[
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6,
+        0.7,
+        0.8,
+        0.9,
+    ],
+    type='mAP')
+inference = dict(load_from_raw_predictions=False, save_raw_prediction=False)
+model = dict(
+    backbone=dict(
+        backbone=dict(
+            adapter_index=[
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+            ],
+            depth=12,
+            drop_path_rate=0.1,
+            embed_dims=768,
+            img_size=224,
+            mlp_ratio=4,
+            norm_cfg=dict(eps=1e-06, type='LN'),
+            num_frames=16,
+            num_heads=12,
+            patch_size=16,
+            qkv_bias=True,
+            return_feat_map=True,
+            total_frames=512,
+            type='VisionTransformerAdapter',
+            with_cp=True),
+        custom=dict(
+            freeze_backbone=False,
+            norm_eval=False,
+            post_processing_pipeline=[
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='b n c t h w -> b c t',
+                    reduction='mean',
+                    type='Reduce'),
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='(b t1) c t -> b c (t1 t)',
+                    t1=32,
+                    type='Rearrange'),
+                dict(keys=[
+                    'feats',
+                ], size=512, type='Interpolate'),
+            ],
+            pre_processing_pipeline=[
+                dict(
+                    keys=[
+                        'frames',
+                    ],
+                    ops='b n c (t1 t) h w -> (b t1) n c t h w',
+                    t1=32,
+                    type='Rearrange'),
+            ],
+            pretrain=
+            'pretrained/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth'
+        ),
+        data_preprocessor=dict(
+            format_shape='NCTHW',
+            mean=[
+                123.675,
+                116.28,
+                103.53,
+            ],
+            std=[
+                58.395,
+                57.12,
+                57.375,
+            ],
+            type='mmaction.ActionDataPreprocessor'),
+        type='mmaction.Recognizer3D'),
+    neck=dict(
+        in_channels=512, num_levels=8, out_channels=512, type='FPNIdentity'),
+    projection=dict(
+        arch=(
+            2,
+            2,
+            7,
+        ),
+        attn_cfg=dict(n_head=4, n_mha_win_size=-1),
+        conv_cfg=dict(kernel_size=3, proj_pdrop=0.0),
+        in_channels=768,
+        input_pdrop=0.3,
+        max_seq_len=512,
+        norm_cfg=dict(type='LN'),
+        out_channels=512,
+        path_pdrop=0.1,
+        transformer1d_rel_pos_cfg=dict(
+            encoder_layer_cfg=dict(dim=768, drop_path=0.1, num_heads=6),
+            in_channels=768,
+            num_layers=3,
+            out_channels=768),
+        type='Conv1DTransformerProj',
+        use_abs_pe=True),
+    rpn_head=dict(
+        boundary_kernel_size=3,
+        center_sample='radius',
+        center_sample_radius=1.5,
+        cls_prior_prob=0.01,
+        feat_channels=512,
+        in_channels=512,
+        iou_weight_power=0.2,
+        label_smoothing=0.0,
+        loss=dict(
+            cls_loss=dict(type='FocalLoss'),
+            iou_rate=dict(type='GIOULoss'),
+            reg_loss=dict(type='DIOULoss')),
+        loss_normalizer=100,
+        loss_normalizer_momentum=0.9,
+        num_bins=16,
+        num_classes=157,
+        num_convs=2,
+        prior_generator=dict(
+            regression_range=[
+                (
+                    0,
+                    4,
+                ),
+                (
+                    4,
+                    8,
+                ),
+                (
+                    8,
+                    16,
+                ),
+                (
+                    16,
+                    32,
+                ),
+                (
+                    32,
+                    64,
+                ),
+                (
+                    64,
+                    128,
+                ),
+                (
+                    128,
+                    256,
+                ),
+                (
+                    256,
+                    10000,
+                ),
+            ],
+            strides=[
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+                64,
+                128,
+            ],
+            type='PointGenerator'),
+        type='TriDetHead'),
+    type='ActionFormer')
+optimizer = dict(
+    backbone=dict(
+        custom=[
+            dict(lr=0.0004, name='adapter', weight_decay=0.05),
+        ],
+        exclude=[
+            'backbone',
+        ],
+        lr=0,
+        weight_decay=0),
+    lr=0.0001,
+    paramwise=True,
+    type='AdamW',
+    weight_decay=0.05)
+post_processing = dict(
+    nms=dict(
+        max_seg_num=1000,
+        multiclass=True,
+        sigma=0.3,
+        use_soft_nms=True,
+        voting_thresh=0.7),
+    pre_nms_thresh=0.001,
+    pre_nms_topk=2000,
+    save_dict=False)
+scale_factor = 1
+scheduler = dict(
+    max_epoch=25, type='LinearWarmupCosineAnnealingLR', warmup_epoch=5)
+solver = dict(
+    amp=True,
+    clip_grad_norm=1,
+    ema=True,
+    fp16_compress=True,
+    static_graph=True,
+    test=dict(batch_size=16, num_workers=4),
+    train=dict(batch_size=16, num_workers=4),
+    val=dict(batch_size=16, num_workers=4))
+window_size = 512
+work_dir = 'exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/'
+workflow = dict(
+    checkpoint_interval=1,
+    logging_interval=200,
+    val_eval_interval=1,
+    val_loss_interval=-1,
+    val_start_epoch=7)
+
+2025-12-09 23:43:21 Train INFO: training subset: 7811 videos
+2025-12-09 23:43:59 Train INFO: testing subset: 1814 videos, truncated as 1814 windows.
+2025-12-09 23:44:24 Train INFO: testing subset: 1814 videos, truncated as 1815 windows.
+2025-12-09 23:44:51 Train INFO: Using DDP with total 2 GPUS...
+2025-12-09 23:44:51 Train INFO: Using FP16 compression ...
+2025-12-09 23:44:51 Train INFO: Using Model EMA...
+2025-12-09 23:44:51 Train INFO: Using Automatic Mixed Precision...
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.gamma
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.bias
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.weight
+2025-12-09 23:44:51 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.bias
+2025-12-09 23:44:52 Train INFO: 
+Final optimizer groups:
+2025-12-09 23:44:52 Train INFO: Group 0: lr=0.0004, weight_decay=0.05, param_count=108
+2025-12-09 23:44:52 Train INFO: Group 1: lr=0.0001, weight_decay=0.05, param_count=107
+2025-12-09 23:44:52 Train INFO: Group 2: lr=0.0001, weight_decay=0.0, param_count=237
+2025-12-09 23:44:52 Train INFO: Training Starts...
+
+2025-12-09 23:44:52 Train INFO: [Train]: Epoch 0 started
+2025-12-10 00:01:03 Train INFO: [Train]: [000][00200/00488]  Loss=1.5712  cls_loss=0.9853  reg_loss=0.5858  lr_backbone=3.3e-05  lr_det=8.2e-06  mem=17787MB
+2025-12-10 00:15:36 Train INFO: [Train]: [000][00400/00488]  Loss=1.3933  cls_loss=0.9389  reg_loss=0.4544  lr_backbone=6.5e-05  lr_det=1.6e-05  mem=17787MB
+2025-12-10 00:21:58 Train INFO: [Train]: [000][00488/00488]  Loss=1.3308  cls_loss=0.9033  reg_loss=0.4275  lr_backbone=8.0e-05  lr_det=2.0e-05  mem=17787MB
+2025-12-10 00:22:00 Train INFO: [Train]: Epoch 1 started
+2025-12-10 00:38:34 Train INFO: [Train]: [001][00200/00488]  Loss=1.0158  cls_loss=0.7078  reg_loss=0.3080  lr_backbone=1.1e-04  lr_det=2.8e-05  mem=17787MB
+2025-12-10 00:54:31 Train INFO: [Train]: [001][00400/00488]  Loss=0.9848  cls_loss=0.6841  reg_loss=0.3008  lr_backbone=1.5e-04  lr_det=3.6e-05  mem=17787MB
+2025-12-10 01:01:03 Train INFO: [Train]: [001][00488/00488]  Loss=0.9749  cls_loss=0.6765  reg_loss=0.2985  lr_backbone=1.6e-04  lr_det=4.0e-05  mem=17787MB
+2025-12-10 01:01:04 Train INFO: [Train]: Epoch 2 started
+2025-12-10 01:18:02 Train INFO: [Train]: [002][00200/00488]  Loss=0.9171  cls_loss=0.6297  reg_loss=0.2875  lr_backbone=1.9e-04  lr_det=4.8e-05  mem=17787MB
+2025-12-10 01:34:13 Train INFO: [Train]: [002][00400/00488]  Loss=0.8986  cls_loss=0.6168  reg_loss=0.2818  lr_backbone=2.3e-04  lr_det=5.6e-05  mem=17787MB
+2025-12-10 01:40:56 Train INFO: [Train]: [002][00488/00488]  Loss=0.8945  cls_loss=0.6142  reg_loss=0.2803  lr_backbone=2.4e-04  lr_det=6.0e-05  mem=17787MB
+2025-12-10 01:40:58 Train INFO: [Train]: Epoch 3 started
+2025-12-10 01:57:37 Train INFO: [Train]: [003][00200/00488]  Loss=0.8632  cls_loss=0.5934  reg_loss=0.2699  lr_backbone=2.7e-04  lr_det=6.8e-05  mem=17787MB
+2025-12-10 02:13:00 Train INFO: [Train]: [003][00400/00488]  Loss=0.8575  cls_loss=0.5915  reg_loss=0.2660  lr_backbone=3.1e-04  lr_det=7.6e-05  mem=17787MB
+2025-12-10 02:19:37 Train INFO: [Train]: [003][00488/00488]  Loss=0.8541  cls_loss=0.5895  reg_loss=0.2646  lr_backbone=3.2e-04  lr_det=8.0e-05  mem=17787MB
+2025-12-10 02:19:39 Train INFO: [Train]: Epoch 4 started
+2025-12-10 02:36:23 Train INFO: [Train]: [004][00200/00488]  Loss=0.8327  cls_loss=0.5791  reg_loss=0.2536  lr_backbone=3.5e-04  lr_det=8.8e-05  mem=17787MB
+2025-12-10 02:52:42 Train INFO: [Train]: [004][00400/00488]  Loss=0.8253  cls_loss=0.5761  reg_loss=0.2492  lr_backbone=3.9e-04  lr_det=9.6e-05  mem=17787MB
+2025-12-10 02:59:34 Train INFO: [Train]: [004][00488/00488]  Loss=0.8221  cls_loss=0.5744  reg_loss=0.2477  lr_backbone=4.0e-04  lr_det=1.0e-04  mem=17787MB
+2025-12-10 02:59:35 Train INFO: [Train]: Epoch 5 started
+2025-12-10 03:16:10 Train INFO: [Train]: [005][00200/00488]  Loss=0.8079  cls_loss=0.5656  reg_loss=0.2423  lr_backbone=4.0e-04  lr_det=1.0e-04  mem=17787MB
+2025-12-10 03:32:22 Train INFO: [Train]: [005][00400/00488]  Loss=0.8009  cls_loss=0.5614  reg_loss=0.2394  lr_backbone=4.0e-04  lr_det=1.0e-04  mem=17787MB
+2025-12-10 03:39:13 Train INFO: [Train]: [005][00488/00488]  Loss=0.7992  cls_loss=0.5600  reg_loss=0.2392  lr_backbone=4.0e-04  lr_det=9.9e-05  mem=17787MB
+2025-12-10 03:39:14 Train INFO: [Train]: Epoch 6 started
+2025-12-10 03:56:43 Train INFO: [Train]: [006][00200/00488]  Loss=0.7849  cls_loss=0.5509  reg_loss=0.2340  lr_backbone=4.0e-04  lr_det=9.9e-05  mem=17787MB
+2025-12-10 04:12:52 Train INFO: [Train]: [006][00400/00488]  Loss=0.7782  cls_loss=0.5457  reg_loss=0.2325  lr_backbone=3.9e-04  lr_det=9.8e-05  mem=17787MB
+2025-12-10 04:19:51 Train INFO: [Train]: [006][00488/00488]  Loss=0.7812  cls_loss=0.5475  reg_loss=0.2337  lr_backbone=3.9e-04  lr_det=9.8e-05  mem=17787MB
+2025-12-10 04:19:52 Train INFO: [Train]: Epoch 7 started
+2025-12-10 04:36:42 Train INFO: [Train]: [007][00200/00488]  Loss=0.7759  cls_loss=0.5435  reg_loss=0.2323  lr_backbone=3.9e-04  lr_det=9.6e-05  mem=17787MB
+2025-12-10 04:52:51 Train INFO: [Train]: [007][00400/00488]  Loss=0.7724  cls_loss=0.5429  reg_loss=0.2295  lr_backbone=3.8e-04  lr_det=9.5e-05  mem=17787MB
+2025-12-10 04:59:51 Train INFO: [Train]: [007][00488/00488]  Loss=0.7705  cls_loss=0.5413  reg_loss=0.2292  lr_backbone=3.8e-04  lr_det=9.5e-05  mem=17787MB
+2025-12-10 05:05:49 Train INFO: 目标文件列表: []
+2025-12-10 05:05:49 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 05:05:49 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 05:06:04 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 05:06:06 Train INFO: Evaluation starts...
+2025-12-10 05:06:50 Train INFO: Loaded annotations from testing subset.
+2025-12-10 05:06:50 Train INFO: Number of ground truth instances: 16691
+2025-12-10 05:06:50 Train INFO: Number of predictions: 1814000
+2025-12-10 05:06:50 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 05:06:50 Train INFO: Average-mAP: 22.21 (%)
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.10 is 35.05%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.20 is 33.70%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.30 is 31.34%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.40 is 28.36%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.50 is 24.79%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.60 is 20.27%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.70 is 14.66%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.80 is 8.77%
+2025-12-10 05:06:50 Train INFO: mAP at tIoU 0.90 is 2.94%
+2025-12-10 05:06:51 Train INFO: [Train]: Epoch 8 started
+2025-12-10 05:23:12 Train INFO: [Train]: [008][00200/00488]  Loss=0.7579  cls_loss=0.5320  reg_loss=0.2259  lr_backbone=3.7e-04  lr_det=9.3e-05  mem=17787MB
+2025-12-10 05:39:01 Train INFO: [Train]: [008][00400/00488]  Loss=0.7594  cls_loss=0.5337  reg_loss=0.2257  lr_backbone=3.7e-04  lr_det=9.1e-05  mem=17787MB
+2025-12-10 05:45:43 Train INFO: [Train]: [008][00488/00488]  Loss=0.7587  cls_loss=0.5333  reg_loss=0.2254  lr_backbone=3.6e-04  lr_det=9.0e-05  mem=17787MB
+2025-12-10 05:51:30 Train INFO: 目标文件列表: []
+2025-12-10 05:51:30 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 05:51:30 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 05:51:46 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 05:51:48 Train INFO: Evaluation starts...
+2025-12-10 05:52:31 Train INFO: Loaded annotations from testing subset.
+2025-12-10 05:52:31 Train INFO: Number of ground truth instances: 16691
+2025-12-10 05:52:31 Train INFO: Number of predictions: 1814000
+2025-12-10 05:52:31 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 05:52:31 Train INFO: Average-mAP: 23.51 (%)
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.10 is 36.63%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.20 is 35.26%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.30 is 33.00%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.40 is 29.88%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.50 is 26.45%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.60 is 21.69%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.70 is 15.85%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.80 is 9.42%
+2025-12-10 05:52:31 Train INFO: mAP at tIoU 0.90 is 3.39%
+2025-12-10 05:52:32 Train INFO: [Train]: Epoch 9 started
+2025-12-10 06:08:48 Train INFO: [Train]: [009][00200/00488]  Loss=0.7556  cls_loss=0.5324  reg_loss=0.2231  lr_backbone=3.5e-04  lr_det=8.8e-05  mem=17787MB
+2025-12-10 06:24:46 Train INFO: [Train]: [009][00400/00488]  Loss=0.7474  cls_loss=0.5258  reg_loss=0.2216  lr_backbone=3.5e-04  lr_det=8.6e-05  mem=17787MB
+2025-12-10 06:31:48 Train INFO: [Train]: [009][00488/00488]  Loss=0.7435  cls_loss=0.5230  reg_loss=0.2205  lr_backbone=3.4e-04  lr_det=8.5e-05  mem=17787MB
+2025-12-10 06:37:44 Train INFO: 目标文件列表: []
+2025-12-10 06:37:44 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 06:37:44 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 06:37:59 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 06:38:01 Train INFO: Evaluation starts...
+2025-12-10 06:38:45 Train INFO: Loaded annotations from testing subset.
+2025-12-10 06:38:45 Train INFO: Number of ground truth instances: 16691
+2025-12-10 06:38:45 Train INFO: Number of predictions: 1814000
+2025-12-10 06:38:45 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 06:38:45 Train INFO: Average-mAP: 24.56 (%)
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.10 is 37.90%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.20 is 36.58%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.30 is 34.34%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.40 is 31.28%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.50 is 27.78%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.60 is 22.83%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.70 is 16.80%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.80 is 9.89%
+2025-12-10 06:38:45 Train INFO: mAP at tIoU 0.90 is 3.67%
+2025-12-10 06:38:46 Train INFO: [Train]: Epoch 10 started
+2025-12-10 06:55:11 Train INFO: [Train]: [010][00200/00488]  Loss=0.7392  cls_loss=0.5206  reg_loss=0.2186  lr_backbone=3.3e-04  lr_det=8.3e-05  mem=17787MB
+2025-12-10 07:11:15 Train INFO: [Train]: [010][00400/00488]  Loss=0.7397  cls_loss=0.5207  reg_loss=0.2190  lr_backbone=3.2e-04  lr_det=8.1e-05  mem=17787MB
+2025-12-10 07:18:03 Train INFO: [Train]: [010][00488/00488]  Loss=0.7372  cls_loss=0.5189  reg_loss=0.2183  lr_backbone=3.2e-04  lr_det=7.9e-05  mem=17787MB
+2025-12-10 07:23:58 Train INFO: 目标文件列表: []
+2025-12-10 07:23:58 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 07:23:58 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 07:24:13 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 07:24:15 Train INFO: Evaluation starts...
+2025-12-10 07:25:00 Train INFO: Loaded annotations from testing subset.
+2025-12-10 07:25:00 Train INFO: Number of ground truth instances: 16691
+2025-12-10 07:25:00 Train INFO: Number of predictions: 1814000
+2025-12-10 07:25:00 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 07:25:00 Train INFO: Average-mAP: 25.36 (%)
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.10 is 38.92%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.20 is 37.57%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.30 is 35.23%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.40 is 32.19%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.50 is 28.58%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.60 is 23.83%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.70 is 17.67%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.80 is 10.49%
+2025-12-10 07:25:00 Train INFO: mAP at tIoU 0.90 is 3.72%
+2025-12-10 07:25:01 Train INFO: [Train]: Epoch 11 started
+2025-12-10 07:41:33 Train INFO: [Train]: [011][00200/00488]  Loss=0.7204  cls_loss=0.5051  reg_loss=0.2153  lr_backbone=3.1e-04  lr_det=7.7e-05  mem=17787MB
+2025-12-10 07:57:17 Train INFO: [Train]: [011][00400/00488]  Loss=0.7235  cls_loss=0.5092  reg_loss=0.2143  lr_backbone=3.0e-04  lr_det=7.4e-05  mem=17787MB
+2025-12-10 08:04:06 Train INFO: [Train]: [011][00488/00488]  Loss=0.7209  cls_loss=0.5067  reg_loss=0.2142  lr_backbone=2.9e-04  lr_det=7.3e-05  mem=17787MB
+2025-12-10 08:10:02 Train INFO: 目标文件列表: []
+2025-12-10 08:10:02 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 08:10:02 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 08:10:17 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 08:10:19 Train INFO: Evaluation starts...
+2025-12-10 08:11:03 Train INFO: Loaded annotations from testing subset.
+2025-12-10 08:11:03 Train INFO: Number of ground truth instances: 16691
+2025-12-10 08:11:03 Train INFO: Number of predictions: 1814000
+2025-12-10 08:11:03 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 08:11:03 Train INFO: Average-mAP: 26.04 (%)
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.10 is 39.72%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.20 is 38.35%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.30 is 35.99%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.40 is 32.97%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.50 is 29.39%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.60 is 24.56%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.70 is 18.54%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.80 is 10.88%
+2025-12-10 08:11:03 Train INFO: mAP at tIoU 0.90 is 3.95%
+2025-12-10 08:11:04 Train INFO: [Train]: Epoch 12 started
+2025-12-10 08:27:30 Train INFO: [Train]: [012][00200/00488]  Loss=0.7056  cls_loss=0.4965  reg_loss=0.2091  lr_backbone=2.8e-04  lr_det=7.0e-05  mem=17787MB
+2025-12-10 08:43:31 Train INFO: [Train]: [012][00400/00488]  Loss=0.7119  cls_loss=0.5015  reg_loss=0.2104  lr_backbone=2.7e-04  lr_det=6.7e-05  mem=17787MB
+2025-12-10 08:50:21 Train INFO: [Train]: [012][00488/00488]  Loss=0.7107  cls_loss=0.5005  reg_loss=0.2102  lr_backbone=2.6e-04  lr_det=6.5e-05  mem=17787MB
+2025-12-10 08:56:12 Train INFO: 目标文件列表: []
+2025-12-10 08:56:12 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 08:56:12 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 08:56:27 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 08:56:29 Train INFO: Evaluation starts...
+2025-12-10 08:57:14 Train INFO: Loaded annotations from testing subset.
+2025-12-10 08:57:14 Train INFO: Number of ground truth instances: 16691
+2025-12-10 08:57:14 Train INFO: Number of predictions: 1814000
+2025-12-10 08:57:14 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 08:57:14 Train INFO: Average-mAP: 26.64 (%)
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.10 is 40.43%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.20 is 39.12%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.30 is 36.74%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.40 is 33.70%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.50 is 30.15%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.60 is 25.20%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.70 is 19.16%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.80 is 11.29%
+2025-12-10 08:57:14 Train INFO: mAP at tIoU 0.90 is 4.00%
+2025-12-10 08:57:15 Train INFO: [Train]: Epoch 13 started
+2025-12-10 09:13:33 Train INFO: [Train]: [013][00200/00488]  Loss=0.7103  cls_loss=0.4991  reg_loss=0.2112  lr_backbone=2.5e-04  lr_det=6.2e-05  mem=17787MB
+2025-12-10 09:29:15 Train INFO: [Train]: [013][00400/00488]  Loss=0.7045  cls_loss=0.4955  reg_loss=0.2090  lr_backbone=2.4e-04  lr_det=5.9e-05  mem=17787MB
+2025-12-10 09:35:57 Train INFO: [Train]: [013][00488/00488]  Loss=0.7033  cls_loss=0.4951  reg_loss=0.2082  lr_backbone=2.3e-04  lr_det=5.8e-05  mem=17787MB
+2025-12-10 09:41:53 Train INFO: 目标文件列表: []
+2025-12-10 09:41:53 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 09:41:53 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 09:42:08 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 09:42:10 Train INFO: Evaluation starts...
+2025-12-10 09:42:57 Train INFO: Loaded annotations from testing subset.
+2025-12-10 09:42:57 Train INFO: Number of ground truth instances: 16691
+2025-12-10 09:42:57 Train INFO: Number of predictions: 1814000
+2025-12-10 09:42:57 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 09:42:57 Train INFO: Average-mAP: 27.04 (%)
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.10 is 40.92%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.20 is 39.63%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.30 is 37.21%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.40 is 34.30%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.50 is 30.61%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.60 is 25.58%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.70 is 19.51%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.80 is 11.52%
+2025-12-10 09:42:57 Train INFO: mAP at tIoU 0.90 is 4.08%
+2025-12-10 09:42:58 Train INFO: [Train]: Epoch 14 started
+2025-12-10 09:59:22 Train INFO: [Train]: [014][00200/00488]  Loss=0.6945  cls_loss=0.4891  reg_loss=0.2054  lr_backbone=2.2e-04  lr_det=5.5e-05  mem=17787MB
+2025-12-10 10:15:07 Train INFO: [Train]: [014][00400/00488]  Loss=0.6945  cls_loss=0.4891  reg_loss=0.2054  lr_backbone=2.1e-04  lr_det=5.1e-05  mem=17787MB
+2025-12-10 10:22:01 Train INFO: [Train]: [014][00488/00488]  Loss=0.6903  cls_loss=0.4859  reg_loss=0.2043  lr_backbone=2.0e-04  lr_det=5.0e-05  mem=17787MB
+2025-12-10 10:27:53 Train INFO: 目标文件列表: []
+2025-12-10 10:27:53 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 10:27:53 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 10:28:08 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 10:28:10 Train INFO: Evaluation starts...
+2025-12-10 10:28:55 Train INFO: Loaded annotations from testing subset.
+2025-12-10 10:28:55 Train INFO: Number of ground truth instances: 16691
+2025-12-10 10:28:55 Train INFO: Number of predictions: 1814000
+2025-12-10 10:28:55 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 10:28:55 Train INFO: Average-mAP: 27.45 (%)
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.10 is 41.36%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.20 is 40.07%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.30 is 37.70%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.40 is 34.74%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.50 is 31.08%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.60 is 26.15%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.70 is 20.00%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.80 is 11.78%
+2025-12-10 10:28:55 Train INFO: mAP at tIoU 0.90 is 4.19%
+2025-12-10 10:28:56 Train INFO: [Train]: Epoch 15 started
+2025-12-10 10:45:17 Train INFO: [Train]: [015][00200/00488]  Loss=0.6767  cls_loss=0.4770  reg_loss=0.1998  lr_backbone=1.9e-04  lr_det=4.7e-05  mem=17787MB
+2025-12-10 11:00:43 Train INFO: [Train]: [015][00400/00488]  Loss=0.6818  cls_loss=0.4805  reg_loss=0.2013  lr_backbone=1.7e-04  lr_det=4.4e-05  mem=17787MB
+2025-12-10 11:07:27 Train INFO: [Train]: [015][00488/00488]  Loss=0.6799  cls_loss=0.4788  reg_loss=0.2011  lr_backbone=1.7e-04  lr_det=4.2e-05  mem=17787MB
+2025-12-10 11:12:44 Train INFO: 目标文件列表: []
+2025-12-10 11:12:44 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 11:12:44 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 11:13:00 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 11:13:02 Train INFO: Evaluation starts...
+2025-12-10 11:13:47 Train INFO: Loaded annotations from testing subset.
+2025-12-10 11:13:47 Train INFO: Number of ground truth instances: 16691
+2025-12-10 11:13:47 Train INFO: Number of predictions: 1814000
+2025-12-10 11:13:47 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 11:13:47 Train INFO: Average-mAP: 27.75 (%)
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.10 is 41.74%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.20 is 40.42%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.30 is 38.03%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.40 is 35.14%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.50 is 31.48%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.60 is 26.56%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.70 is 20.25%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.80 is 11.90%
+2025-12-10 11:13:47 Train INFO: mAP at tIoU 0.90 is 4.28%
+2025-12-10 11:13:48 Train INFO: [Train]: Epoch 16 started
+2025-12-10 11:29:53 Train INFO: [Train]: [016][00200/00488]  Loss=0.6727  cls_loss=0.4740  reg_loss=0.1987  lr_backbone=1.6e-04  lr_det=3.9e-05  mem=17787MB
+2025-12-10 11:45:13 Train INFO: [Train]: [016][00400/00488]  Loss=0.6759  cls_loss=0.4761  reg_loss=0.1998  lr_backbone=1.4e-04  lr_det=3.6e-05  mem=17787MB
+2025-12-10 11:52:08 Train INFO: [Train]: [016][00488/00488]  Loss=0.6743  cls_loss=0.4750  reg_loss=0.1994  lr_backbone=1.4e-04  lr_det=3.5e-05  mem=17787MB
+2025-12-10 11:57:16 Train INFO: 目标文件列表: []
+2025-12-10 11:57:16 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 11:57:16 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 11:57:32 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 11:57:34 Train INFO: Evaluation starts...
+2025-12-10 11:58:20 Train INFO: Loaded annotations from testing subset.
+2025-12-10 11:58:20 Train INFO: Number of ground truth instances: 16691
+2025-12-10 11:58:20 Train INFO: Number of predictions: 1814000
+2025-12-10 11:58:20 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 11:58:20 Train INFO: Average-mAP: 28.06 (%)
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.10 is 42.00%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.20 is 40.75%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.30 is 38.33%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.40 is 35.43%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.50 is 31.91%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.60 is 26.85%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.70 is 20.57%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.80 is 12.25%
+2025-12-10 11:58:20 Train INFO: mAP at tIoU 0.90 is 4.41%
+2025-12-10 11:58:21 Train INFO: [Train]: Epoch 17 started
+2025-12-10 12:13:58 Train INFO: [Train]: [017][00200/00488]  Loss=0.6700  cls_loss=0.4716  reg_loss=0.1984  lr_backbone=1.3e-04  lr_det=3.2e-05  mem=17787MB
+2025-12-10 12:29:45 Train INFO: [Train]: [017][00400/00488]  Loss=0.6697  cls_loss=0.4720  reg_loss=0.1977  lr_backbone=1.1e-04  lr_det=2.9e-05  mem=17787MB
+2025-12-10 12:36:41 Train INFO: [Train]: [017][00488/00488]  Loss=0.6702  cls_loss=0.4726  reg_loss=0.1977  lr_backbone=1.1e-04  lr_det=2.7e-05  mem=17787MB
+2025-12-10 12:42:15 Train INFO: 目标文件列表: []
+2025-12-10 12:42:15 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 12:42:15 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 12:42:31 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 12:42:33 Train INFO: Evaluation starts...
+2025-12-10 12:43:20 Train INFO: Loaded annotations from testing subset.
+2025-12-10 12:43:20 Train INFO: Number of ground truth instances: 16691
+2025-12-10 12:43:20 Train INFO: Number of predictions: 1814000
+2025-12-10 12:43:20 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 12:43:20 Train INFO: Average-mAP: 28.23 (%)
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.10 is 42.18%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.20 is 40.99%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.30 is 38.50%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.40 is 35.61%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.50 is 32.12%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.60 is 26.99%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.70 is 20.69%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.80 is 12.49%
+2025-12-10 12:43:20 Train INFO: mAP at tIoU 0.90 is 4.48%
+2025-12-10 12:43:21 Train INFO: [Train]: Epoch 18 started
+2025-12-10 12:59:22 Train INFO: [Train]: [018][00200/00488]  Loss=0.6510  cls_loss=0.4601  reg_loss=0.1908  lr_backbone=9.8e-05  lr_det=2.4e-05  mem=17787MB
+2025-12-10 13:14:45 Train INFO: [Train]: [018][00400/00488]  Loss=0.6558  cls_loss=0.4626  reg_loss=0.1932  lr_backbone=8.7e-05  lr_det=2.2e-05  mem=17787MB
+2025-12-10 13:21:21 Train INFO: [Train]: [018][00488/00488]  Loss=0.6574  cls_loss=0.4634  reg_loss=0.1940  lr_backbone=8.3e-05  lr_det=2.1e-05  mem=17787MB
+2025-12-10 13:26:39 Train INFO: 目标文件列表: []
+2025-12-10 13:26:39 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 13:26:39 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 13:26:56 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 13:26:58 Train INFO: Evaluation starts...
+2025-12-10 13:27:48 Train INFO: Loaded annotations from testing subset.
+2025-12-10 13:27:48 Train INFO: Number of ground truth instances: 16691
+2025-12-10 13:27:48 Train INFO: Number of predictions: 1814000
+2025-12-10 13:27:48 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 13:27:48 Train INFO: Average-mAP: 28.38 (%)
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.10 is 42.40%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.20 is 41.15%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.30 is 38.71%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.40 is 35.86%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.50 is 32.31%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.60 is 27.02%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.70 is 20.93%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.80 is 12.51%
+2025-12-10 13:27:48 Train INFO: mAP at tIoU 0.90 is 4.54%
+2025-12-10 13:27:49 Train INFO: [Train]: Epoch 19 started
+2025-12-10 13:43:49 Train INFO: [Train]: [019][00200/00488]  Loss=0.6607  cls_loss=0.4660  reg_loss=0.1947  lr_backbone=7.2e-05  lr_det=1.8e-05  mem=17787MB
+2025-12-10 13:58:56 Train INFO: [Train]: [019][00400/00488]  Loss=0.6601  cls_loss=0.4650  reg_loss=0.1951  lr_backbone=6.3e-05  lr_det=1.6e-05  mem=17787MB
+2025-12-10 14:05:32 Train INFO: [Train]: [019][00488/00488]  Loss=0.6568  cls_loss=0.4629  reg_loss=0.1939  lr_backbone=5.9e-05  lr_det=1.5e-05  mem=17787MB
+2025-12-10 14:10:11 Train INFO: 目标文件列表: []
+2025-12-10 14:10:11 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 14:10:11 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 14:10:29 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 14:10:31 Train INFO: Evaluation starts...
+2025-12-10 14:11:21 Train INFO: Loaded annotations from testing subset.
+2025-12-10 14:11:21 Train INFO: Number of ground truth instances: 16691
+2025-12-10 14:11:21 Train INFO: Number of predictions: 1814000
+2025-12-10 14:11:21 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 14:11:21 Train INFO: Average-mAP: 28.44 (%)
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.10 is 42.45%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.20 is 41.18%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.30 is 38.83%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.40 is 35.95%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.50 is 32.46%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.60 is 27.16%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.70 is 20.89%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.80 is 12.54%
+2025-12-10 14:11:21 Train INFO: mAP at tIoU 0.90 is 4.54%
+2025-12-10 14:11:22 Train INFO: [Train]: Epoch 20 started
+2025-12-10 14:26:39 Train INFO: [Train]: [020][00200/00488]  Loss=0.6423  cls_loss=0.4536  reg_loss=0.1888  lr_backbone=5.0e-05  lr_det=1.2e-05  mem=17787MB
+2025-12-10 14:41:34 Train INFO: [Train]: [020][00400/00488]  Loss=0.6525  cls_loss=0.4604  reg_loss=0.1922  lr_backbone=4.2e-05  lr_det=1.0e-05  mem=17787MB
+2025-12-10 14:48:19 Train INFO: [Train]: [020][00488/00488]  Loss=0.6516  cls_loss=0.4598  reg_loss=0.1918  lr_backbone=3.8e-05  lr_det=9.6e-06  mem=17787MB
+2025-12-10 14:53:28 Train INFO: 目标文件列表: []
+2025-12-10 14:53:28 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 14:53:28 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 14:53:46 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 14:53:48 Train INFO: Evaluation starts...
+2025-12-10 14:54:39 Train INFO: Loaded annotations from testing subset.
+2025-12-10 14:54:39 Train INFO: Number of ground truth instances: 16691
+2025-12-10 14:54:39 Train INFO: Number of predictions: 1814000
+2025-12-10 14:54:39 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 14:54:39 Train INFO: Average-mAP: 28.50 (%)
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.10 is 42.53%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.20 is 41.28%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.30 is 38.94%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.40 is 36.06%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.50 is 32.54%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.60 is 27.16%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.70 is 20.94%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.80 is 12.38%
+2025-12-10 14:54:39 Train INFO: mAP at tIoU 0.90 is 4.64%
+2025-12-10 14:54:40 Train INFO: [Train]: Epoch 21 started
+2025-12-10 15:10:02 Train INFO: [Train]: [021][00200/00488]  Loss=0.6452  cls_loss=0.4545  reg_loss=0.1908  lr_backbone=3.1e-05  lr_det=7.8e-06  mem=17787MB
+2025-12-10 15:24:59 Train INFO: [Train]: [021][00400/00488]  Loss=0.6483  cls_loss=0.4570  reg_loss=0.1913  lr_backbone=2.4e-05  lr_det=6.1e-06  mem=17787MB
+2025-12-10 15:31:25 Train INFO: [Train]: [021][00488/00488]  Loss=0.6464  cls_loss=0.4557  reg_loss=0.1907  lr_backbone=2.2e-05  lr_det=5.5e-06  mem=17787MB
+2025-12-10 15:36:15 Train INFO: 目标文件列表: []
+2025-12-10 15:36:15 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 15:36:15 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 15:36:36 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 15:36:38 Train INFO: Evaluation starts...
+2025-12-10 15:37:30 Train INFO: Loaded annotations from testing subset.
+2025-12-10 15:37:30 Train INFO: Number of ground truth instances: 16691
+2025-12-10 15:37:30 Train INFO: Number of predictions: 1814000
+2025-12-10 15:37:30 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 15:37:30 Train INFO: Average-mAP: 28.53 (%)
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.10 is 42.60%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.20 is 41.30%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.30 is 38.94%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.40 is 36.08%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.50 is 32.55%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.60 is 27.19%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.70 is 20.94%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.80 is 12.46%
+2025-12-10 15:37:30 Train INFO: mAP at tIoU 0.90 is 4.68%
+2025-12-10 15:37:31 Train INFO: [Train]: Epoch 22 started
+2025-12-10 15:52:56 Train INFO: [Train]: [022][00200/00488]  Loss=0.6420  cls_loss=0.4533  reg_loss=0.1887  lr_backbone=1.6e-05  lr_det=4.1e-06  mem=17787MB
+2025-12-10 16:07:43 Train INFO: [Train]: [022][00400/00488]  Loss=0.6396  cls_loss=0.4509  reg_loss=0.1887  lr_backbone=1.2e-05  lr_det=2.9e-06  mem=17787MB
+2025-12-10 16:14:08 Train INFO: [Train]: [022][00488/00488]  Loss=0.6381  cls_loss=0.4499  reg_loss=0.1883  lr_backbone=9.8e-06  lr_det=2.5e-06  mem=17787MB
+2025-12-10 16:18:43 Train INFO: 目标文件列表: []
+2025-12-10 16:18:43 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 16:18:43 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 16:19:02 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 16:19:05 Train INFO: Evaluation starts...
+2025-12-10 16:19:56 Train INFO: Loaded annotations from testing subset.
+2025-12-10 16:19:56 Train INFO: Number of ground truth instances: 16691
+2025-12-10 16:19:56 Train INFO: Number of predictions: 1814000
+2025-12-10 16:19:56 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 16:19:56 Train INFO: Average-mAP: 28.62 (%)
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.10 is 42.64%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.20 is 41.35%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.30 is 39.02%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.40 is 36.19%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.50 is 32.71%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.60 is 27.25%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.70 is 21.09%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.80 is 12.54%
+2025-12-10 16:19:56 Train INFO: mAP at tIoU 0.90 is 4.78%
+2025-12-10 16:19:58 Train INFO: [Train]: Epoch 23 started
+2025-12-10 16:35:14 Train INFO: [Train]: [023][00200/00488]  Loss=0.6381  cls_loss=0.4498  reg_loss=0.1884  lr_backbone=6.2e-06  lr_det=1.6e-06  mem=17787MB
+2025-12-10 16:50:11 Train INFO: [Train]: [023][00400/00488]  Loss=0.6411  cls_loss=0.4519  reg_loss=0.1892  lr_backbone=3.4e-06  lr_det=8.7e-07  mem=17787MB
+2025-12-10 16:56:39 Train INFO: [Train]: [023][00488/00488]  Loss=0.6386  cls_loss=0.4502  reg_loss=0.1884  lr_backbone=2.5e-06  lr_det=6.3e-07  mem=17787MB
+2025-12-10 17:01:13 Train INFO: 目标文件列表: []
+2025-12-10 17:01:13 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 17:01:13 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']
+2025-12-10 17:01:31 Train INFO: 完整检测结果已保存到: exps/charades1209/adatad/e2e_actionformer_videomae_b_512x1_160_adapter/gpu2_id0/full_detection_results.json
+2025-12-10 17:01:33 Train INFO: Evaluation starts...
+2025-12-10 17:02:22 Train INFO: Loaded annotations from testing subset.
+2025-12-10 17:02:22 Train INFO: Number of ground truth instances: 16691
+2025-12-10 17:02:22 Train INFO: Number of predictions: 1814000
+2025-12-10 17:02:22 Train INFO: Fixed threshold for tiou score: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+2025-12-10 17:02:22 Train INFO: Average-mAP: 28.67 (%)
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.10 is 42.70%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.20 is 41.41%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.30 is 39.08%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.40 is 36.24%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.50 is 32.77%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.60 is 27.32%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.70 is 21.19%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.80 is 12.57%
+2025-12-10 17:02:22 Train INFO: mAP at tIoU 0.90 is 4.77%
+2025-12-10 17:02:23 Train INFO: [Train]: Epoch 24 started
+2025-12-10 17:17:33 Train INFO: [Train]: [024][00200/00488]  Loss=0.6484  cls_loss=0.4575  reg_loss=0.1909  lr_backbone=8.7e-07  lr_det=2.3e-07  mem=17787MB
+2025-12-10 17:32:26 Train INFO: [Train]: [024][00400/00488]  Loss=0.6434  cls_loss=0.4537  reg_loss=0.1897  lr_backbone=9.2e-08  lr_det=3.0e-08  mem=17787MB
+2025-12-10 17:39:02 Train INFO: [Train]: [024][00488/00488]  Loss=0.6427  cls_loss=0.4530  reg_loss=0.1897  lr_backbone=1.0e-08  lr_det=1.0e-08  mem=17787MB
+2025-12-10 17:43:54 Train INFO: 目标文件列表: []
+2025-12-10 17:43:54 Train INFO: result_dict中的视频名数量: 1814
+2025-12-10 17:43:54 Train INFO: 前5个视频名: ['FPJ9D', 'B1AMA', '0E6H9', 'JBFPI', 'HG7C2']

@@ -1,0 +1,3 @@
+# ninja log v7
+0	20656	1760941410856027788	/root/autodl-tmp/OpenTAD-main/OpenTAD-main/opentad/models/roi_heads/roi_extractors/align1d/build/temp.linux-x86_64-cpython-38/Align1D_cuda_kernal.o	f26c8d675e2c2c00
+0	29033	1760941410856027788	/root/autodl-tmp/OpenTAD-main/OpenTAD-main/opentad/models/roi_heads/roi_extractors/align1d/build/temp.linux-x86_64-cpython-38/Align1D_cuda.o	a581a3a503e44050

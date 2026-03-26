@@ -1,0 +1,1052 @@
+2026-02-11 09:37:29 Train INFO: Using torch version: 2.0.0+cu118, CUDA version: 11.8
+2026-02-11 09:37:30 Train INFO: Config: 
+annotation_path = '/root/autodl-tmp/adatad/data/anet/annotations/activity_net.v1-3.min.json'
+block_list = '/root/autodl-tmp/adatad/data/anet/annotations/block_list.txt'
+chunk_num = 48
+class_map = '/root/autodl-tmp/adatad/data/anet/annotations/category_idx.txt'
+data_path = '/root/autodl-tmp/adatad/data/anet/Anet_videos_15fps_short256'
+dataset = dict(
+    test=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/anet/annotations/activity_net.v1-3.min.json',
+        block_list=
+        '/root/autodl-tmp/adatad/data/anet/annotations/block_list.txt',
+        class_agnostic=True,
+        class_map=
+        '/root/autodl-tmp/adatad/data/anet/annotations/category_idx.txt',
+        data_path=
+        '/root/autodl-tmp/adatad/data/anet/Anet_videos_15fps_short256',
+        filter_gt=False,
+        pipeline=[
+            dict(format='mp4', prefix='v_', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='resize',
+                num_clips=1,
+                scale_factor=4,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(keys=[
+                'imgs',
+            ], type='ConvertToTensor'),
+            dict(inputs='imgs', keys=[
+                'masks',
+            ], type='Collect'),
+        ],
+        resize_length=192,
+        subset_name='validation',
+        test_mode=True,
+        type='AnetResizeDataset'),
+    train=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/anet/annotations/activity_net.v1-3.min.json',
+        block_list=
+        '/root/autodl-tmp/adatad/data/anet/annotations/block_list.txt',
+        class_agnostic=True,
+        class_map=
+        '/root/autodl-tmp/adatad/data/anet/annotations/category_idx.txt',
+        data_path=
+        '/root/autodl-tmp/adatad/data/anet/Anet_videos_15fps_short256',
+        filter_gt=True,
+        pipeline=[
+            dict(format='mp4', prefix='v_', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='resize',
+                num_clips=1,
+                scale_factor=4,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                182,
+            ), type='mmaction.Resize'),
+            dict(type='mmaction.RandomResizedCrop'),
+            dict(keep_ratio=False, scale=(
+                160,
+                160,
+            ), type='mmaction.Resize'),
+            dict(flip_ratio=0.5, type='mmaction.Flip'),
+            dict(transforms='default', type='mmaction.ImgAug'),
+            dict(type='mmaction.ColorJitter'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        resize_length=192,
+        subset_name='training',
+        type='AnetResizeDataset'),
+    val=dict(
+        ann_file=
+        '/root/autodl-tmp/adatad/data/anet/annotations/activity_net.v1-3.min.json',
+        block_list=
+        '/root/autodl-tmp/adatad/data/anet/annotations/block_list.txt',
+        class_agnostic=True,
+        class_map=
+        '/root/autodl-tmp/adatad/data/anet/annotations/category_idx.txt',
+        data_path=
+        '/root/autodl-tmp/adatad/data/anet/Anet_videos_15fps_short256',
+        filter_gt=True,
+        pipeline=[
+            dict(format='mp4', prefix='v_', type='PrepareVideoInfo'),
+            dict(num_threads=4, type='mmaction.DecordInit'),
+            dict(
+                method='resize',
+                num_clips=1,
+                scale_factor=4,
+                type='LoadFrames'),
+            dict(type='mmaction.DecordDecode'),
+            dict(scale=(
+                -1,
+                160,
+            ), type='mmaction.Resize'),
+            dict(crop_size=160, type='mmaction.CenterCrop'),
+            dict(input_format='NCTHW', type='mmaction.FormatShape'),
+            dict(
+                keys=[
+                    'imgs',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='ConvertToTensor'),
+            dict(
+                inputs='imgs',
+                keys=[
+                    'masks',
+                    'gt_segments',
+                    'gt_labels',
+                ],
+                type='Collect'),
+        ],
+        resize_length=192,
+        subset_name='validation',
+        type='AnetResizeDataset'))
+dataset_type = 'AnetResizeDataset'
+evaluation = dict(
+    blocked_videos='/root/autodl-tmp/adatad/data/anet/annotations/blocked.json',
+    ground_truth_filename=
+    '/root/autodl-tmp/adatad/data/anet/annotations/activity_net.v1-3.min.json',
+    subset='validation',
+    tiou_thresholds=[
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+    ],
+    type='mAP')
+inference = dict(load_from_raw_predictions=False, save_raw_prediction=False)
+model = dict(
+    backbone=dict(
+        backbone=dict(
+            adapter_index=[
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+            ],
+            depth=12,
+            drop_path_rate=0.1,
+            embed_dims=768,
+            img_size=224,
+            mlp_ratio=4,
+            norm_cfg=dict(eps=1e-06, type='LN'),
+            num_frames=16,
+            num_heads=12,
+            patch_size=16,
+            qkv_bias=True,
+            return_feat_map=True,
+            total_frames=768,
+            type='VisionTransformerAdapter',
+            with_cp=True),
+        custom=dict(
+            freeze_backbone=False,
+            norm_eval=False,
+            post_processing_pipeline=[
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='b n c t h w -> b c t',
+                    reduction='mean',
+                    type='Reduce'),
+                dict(
+                    keys=[
+                        'feats',
+                    ],
+                    ops='(b t1) c t -> b c (t1 t)',
+                    t1=48,
+                    type='Rearrange'),
+                dict(keys=[
+                    'feats',
+                ], size=192, type='Interpolate'),
+            ],
+            pre_processing_pipeline=[
+                dict(
+                    keys=[
+                        'frames',
+                    ],
+                    ops='b n c (t1 t) h w -> (b t1) n c t h w',
+                    t1=48,
+                    type='Rearrange'),
+            ],
+            pretrain=
+            '/root/autodl-tmp/adatad/pretrain/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth'
+        ),
+        data_preprocessor=dict(
+            format_shape='NCTHW',
+            mean=[
+                123.675,
+                116.28,
+                103.53,
+            ],
+            std=[
+                58.395,
+                57.12,
+                57.375,
+            ],
+            type='mmaction.ActionDataPreprocessor'),
+        type='mmaction.Recognizer3D'),
+    neck=dict(
+        in_channels=256, num_levels=6, out_channels=256, type='FPNIdentity'),
+    projection=dict(
+        arch=(
+            2,
+            2,
+            5,
+        ),
+        attn_cfg=dict(n_head=4, n_mha_win_size=-1),
+        conv_cfg=dict(kernel_size=3, proj_pdrop=0.0),
+        in_channels=768,
+        max_seq_len=192,
+        norm_cfg=dict(type='LN'),
+        out_channels=256,
+        path_pdrop=0.1,
+        transformer1d_rel_pos_cfg=dict(
+            encoder_layer_cfg=dict(dim=768, drop_path=0.1, num_heads=6),
+            in_channels=768,
+            num_layers=3,
+            out_channels=768),
+        type='Conv1DTransformerProj',
+        use_abs_pe=True),
+    rpn_head=dict(
+        boundary_kernel_size=3,
+        center_sample='radius',
+        center_sample_radius=1.5,
+        cls_prior_prob=0.01,
+        feat_channels=256,
+        in_channels=256,
+        iou_weight_power=0.2,
+        label_smoothing=0.1,
+        loss=dict(
+            cls_loss=dict(type='FocalLoss'),
+            iou_rate=dict(type='GIOULoss'),
+            reg_loss=dict(type='DIOULoss')),
+        loss_normalizer=200,
+        loss_normalizer_momentum=0.9,
+        loss_weight=2.0,
+        num_bins=16,
+        num_classes=1,
+        num_convs=2,
+        prior_generator=dict(
+            regression_range=[
+                (
+                    0,
+                    4,
+                ),
+                (
+                    4,
+                    8,
+                ),
+                (
+                    8,
+                    16,
+                ),
+                (
+                    16,
+                    32,
+                ),
+                (
+                    32,
+                    64,
+                ),
+                (
+                    64,
+                    10000,
+                ),
+            ],
+            strides=[
+                1,
+                2,
+                4,
+                8,
+                16,
+                32,
+            ],
+            type='PointGenerator'),
+        type='TriDetHead'),
+    type='ActionFormer')
+optimizer = dict(
+    backbone=dict(
+        custom=[
+            dict(lr=0.0001, name='adapter', weight_decay=0.05),
+        ],
+        exclude=[
+            'backbone',
+        ],
+        lr=0,
+        weight_decay=0),
+    lr=0.001,
+    paramwise=True,
+    projection=dict(lr=0.0005, weight_decay=0.05),
+    rpn_head=dict(lr=0.0005, weight_decay=0.05),
+    type='AdamW',
+    weight_decay=0.05)
+post_processing = dict(
+    external_cls=dict(
+        path=
+        '/root/autodl-tmp/adatad/data/anet/classifiers/cuhk_val_simp_7.json',
+        topk=2,
+        type='CUHKANETClassifier'),
+    nms=dict(
+        max_seg_num=100,
+        min_score=0.001,
+        multiclass=False,
+        sigma=0.7,
+        use_soft_nms=True,
+        voting_thresh=0.9),
+    save_dict=False)
+resize_length = 192
+scale_factor = 4
+scheduler = dict(
+    max_epoch=30, type='LinearWarmupCosineAnnealingLR', warmup_epoch=5)
+solver = dict(
+    amp=True,
+    clip_grad_norm=1,
+    ema=True,
+    fp16_compress=True,
+    static_graph=True,
+    test=dict(batch_size=16, num_workers=8),
+    train=dict(batch_size=16, num_workers=8),
+    val=dict(batch_size=16, num_workers=8))
+work_dir = 'exps/anet/adatad0211/e2e_actionformer_videomae_b_192x4_160_adapter/gpu4_id0/'
+workflow = dict(
+    checkpoint_interval=1,
+    end_epoch=20,
+    logging_interval=200,
+    val_eval_interval=1,
+    val_loss_interval=-1,
+    val_start_epoch=8)
+
+2026-02-11 09:37:31 Train INFO: training subset: 9977 videos
+2026-02-11 09:37:55 Train INFO: validation subset: 4898 videos
+2026-02-11 09:38:08 Train INFO: validation subset: 4926 videos
+2026-02-11 09:38:29 Train INFO: Using DDP with total 4 GPUS...
+2026-02-11 09:38:29 Train INFO: Using FP16 compression ...
+2026-02-11 09:38:29 Train INFO: Using Model EMA...
+2026-02-11 09:38:29 Train INFO: Using Automatic Mixed Precision...
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.0.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.1.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.2.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.3.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.4.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.5.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.6.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.7.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.8.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.9.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.10.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.gamma
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.dwconv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.conv.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.down_proj.bias
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.weight
+2026-02-11 09:38:29 Train INFO: Backbone parameter: model.backbone.blocks.11.adapter.up_proj.bias
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.0.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.0.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.0.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.1.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.1.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_convs.1.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.0.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.0.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.0.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.1.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.1.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_convs.1.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_head.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_head.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_head.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.reg_head.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_head.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_head.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_head.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_head.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.0.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.1.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.2.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.3.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.4.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.scale.5.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.0.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.0.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.0.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.1.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.1.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_start_convs.1.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.0.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.0.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.0.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.1.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.1.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: RPN Head parameter: rpn_head.cls_end_convs.1.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.norm1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.norm1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.attn.q_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.attn.v_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.attn.qkv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.norm2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.norm2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.mlp.fc1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.mlp.fc1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.mlp.fc2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.0.mlp.fc2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.norm1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.norm1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.attn.q_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.attn.v_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.attn.qkv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.norm2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.norm2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.mlp.fc1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.mlp.fc1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.mlp.fc2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.1.mlp.fc2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.norm1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.norm1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.attn.q_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.attn.v_bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.attn.qkv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.norm2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.norm2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.mlp.fc1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.mlp.fc1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.mlp.fc2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.transformer1d_rel_pos.encoder.layers.2.mlp.fc2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.0.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.0.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.0.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.1.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.1.norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.embed.1.norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.0.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.stem.1.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.0.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.1.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.2.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.3.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.ln1.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.ln1.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.ln2.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.ln2.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.query_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.query_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.query_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.key_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.key_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.key_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.value_conv.conv.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.value_norm.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.value_norm.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.key.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.key.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.query.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.query.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.value.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.value.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.proj.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.attn.proj.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.mlp.0.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.mlp.0.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.mlp.3.weight (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.mlp.3.bias (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.drop_path_attn.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: Projection parameter: projection.branch.4.drop_path_mlp.scale (lr=0.0005)
+2026-02-11 09:38:29 Train INFO: 
+Final optimizer groups:
+2026-02-11 09:38:29 Train INFO: Group 0: lr=0.0001, weight_decay=0.05, param_count=108
+2026-02-11 09:38:29 Train INFO: Group 1: lr=0.001, weight_decay=0.0, param_count=12
+2026-02-11 09:38:29 Train INFO: Group 2: lr=0.0005, weight_decay=0.05, param_count=38
+2026-02-11 09:38:29 Train INFO: Group 3: lr=0.0005, weight_decay=0.05, param_count=234
+2026-02-11 09:38:29 Train INFO: 
+========== Optimizer Parameter Groups Info ==========
+2026-02-11 09:38:29 Train INFO: 2026-02-11 09:38:29 Train INFO: Group 0: lr=0.000100, weight_decay=0.050000, param_count=4004364
+2026-02-11 09:38:29 Train INFO: 2026-02-11 09:38:29 Train INFO: Group 1: lr=0.001000, weight_decay=0.000000, param_count=3072
+2026-02-11 09:38:29 Train INFO: 2026-02-11 09:38:29 Train INFO: Group 2: lr=0.000500, weight_decay=0.050000, param_count=1605419
+2026-02-11 09:38:29 Train INFO: 2026-02-11 09:38:29 Train INFO: Group 3: lr=0.000500, weight_decay=0.050000, param_count=27607552
+2026-02-11 09:38:29 Train INFO: =====================================================
+
+2026-02-11 09:38:29 Train INFO: Training Starts...
+
+2026-02-11 09:38:29 Train INFO: [Train]: Epoch 0 started
+2026-02-11 09:46:29 Train INFO: [Train]: [000][00200/00623]  Loss=1.1424  cls_loss=0.4502  reg_loss=0.6922  lr_backbone=6.4e-06  lr_det=3.2e-05  mem=13309MB
+2026-02-11 09:54:11 Train INFO: [Train]: [000][00400/00623]  Loss=1.0482  cls_loss=0.4401  reg_loss=0.6081  lr_backbone=1.3e-05  lr_det=6.4e-05  mem=13309MB
+2026-02-11 10:01:54 Train INFO: [Train]: [000][00600/00623]  Loss=1.0038  cls_loss=0.4316  reg_loss=0.5721  lr_backbone=1.9e-05  lr_det=9.6e-05  mem=13309MB
+2026-02-11 10:02:46 Train INFO: [Train]: [000][00623/00623]  Loss=0.9977  cls_loss=0.4299  reg_loss=0.5678  lr_backbone=2.0e-05  lr_det=1.0e-04  mem=13309MB
+2026-02-11 10:02:48 Train INFO: [Train]: Epoch 1 started
+2026-02-11 10:10:43 Train INFO: [Train]: [001][00200/00623]  Loss=0.8613  cls_loss=0.3939  reg_loss=0.4674  lr_backbone=2.6e-05  lr_det=1.3e-04  mem=13309MB
+2026-02-11 10:18:26 Train INFO: [Train]: [001][00400/00623]  Loss=0.8418  cls_loss=0.3879  reg_loss=0.4539  lr_backbone=3.3e-05  lr_det=1.6e-04  mem=13309MB
+2026-02-11 10:26:08 Train INFO: [Train]: [001][00600/00623]  Loss=0.8454  cls_loss=0.3901  reg_loss=0.4554  lr_backbone=3.9e-05  lr_det=2.0e-04  mem=13309MB
+2026-02-11 10:27:00 Train INFO: [Train]: [001][00623/00623]  Loss=0.8454  cls_loss=0.3902  reg_loss=0.4552  lr_backbone=4.0e-05  lr_det=2.0e-04  mem=13309MB
+2026-02-11 10:27:02 Train INFO: [Train]: Epoch 2 started
+2026-02-11 10:34:58 Train INFO: [Train]: [002][00200/00623]  Loss=0.8221  cls_loss=0.3845  reg_loss=0.4376  lr_backbone=4.6e-05  lr_det=2.3e-04  mem=13309MB
+2026-02-11 10:42:41 Train INFO: [Train]: [002][00400/00623]  Loss=0.8262  cls_loss=0.3850  reg_loss=0.4412  lr_backbone=5.3e-05  lr_det=2.6e-04  mem=13309MB
+2026-02-11 10:50:23 Train INFO: [Train]: [002][00600/00623]  Loss=0.8209  cls_loss=0.3833  reg_loss=0.4376  lr_backbone=5.9e-05  lr_det=3.0e-04  mem=13309MB
+2026-02-11 10:51:15 Train INFO: [Train]: [002][00623/00623]  Loss=0.8206  cls_loss=0.3830  reg_loss=0.4376  lr_backbone=6.0e-05  lr_det=3.0e-04  mem=13309MB
+2026-02-11 10:51:17 Train INFO: [Train]: Epoch 3 started
+2026-02-11 10:59:13 Train INFO: [Train]: [003][00200/00623]  Loss=0.8342  cls_loss=0.3892  reg_loss=0.4449  lr_backbone=6.6e-05  lr_det=3.3e-04  mem=13309MB
+2026-02-11 11:06:57 Train INFO: [Train]: [003][00400/00623]  Loss=0.8222  cls_loss=0.3836  reg_loss=0.4386  lr_backbone=7.3e-05  lr_det=3.6e-04  mem=13309MB
+2026-02-11 11:14:40 Train INFO: [Train]: [003][00600/00623]  Loss=0.8268  cls_loss=0.3859  reg_loss=0.4409  lr_backbone=7.9e-05  lr_det=4.0e-04  mem=13309MB
+2026-02-11 11:15:32 Train INFO: [Train]: [003][00623/00623]  Loss=0.8227  cls_loss=0.3840  reg_loss=0.4387  lr_backbone=8.0e-05  lr_det=4.0e-04  mem=13309MB
+2026-02-11 11:15:33 Train INFO: [Train]: Epoch 4 started
+2026-02-11 11:23:31 Train INFO: [Train]: [004][00200/00623]  Loss=0.8178  cls_loss=0.3783  reg_loss=0.4396  lr_backbone=8.6e-05  lr_det=4.3e-04  mem=13309MB
+2026-02-11 11:31:14 Train INFO: [Train]: [004][00400/00623]  Loss=0.8178  cls_loss=0.3809  reg_loss=0.4369  lr_backbone=9.3e-05  lr_det=4.6e-04  mem=13309MB
+2026-02-11 11:38:56 Train INFO: [Train]: [004][00600/00623]  Loss=0.7981  cls_loss=0.3720  reg_loss=0.4261  lr_backbone=9.9e-05  lr_det=5.0e-04  mem=13309MB
+2026-02-11 11:39:48 Train INFO: [Train]: [004][00623/00623]  Loss=0.7964  cls_loss=0.3717  reg_loss=0.4248  lr_backbone=1.0e-04  lr_det=5.0e-04  mem=13309MB
+2026-02-11 11:39:50 Train INFO: [Train]: Epoch 5 started
+2026-02-11 11:47:47 Train INFO: [Train]: [005][00200/00623]  Loss=0.7902  cls_loss=0.3646  reg_loss=0.4256  lr_backbone=1.0e-04  lr_det=5.0e-04  mem=13309MB
+2026-02-11 11:55:30 Train INFO: [Train]: [005][00400/00623]  Loss=0.7919  cls_loss=0.3670  reg_loss=0.4249  lr_backbone=1.0e-04  lr_det=5.0e-04  mem=13309MB
+2026-02-11 12:03:12 Train INFO: [Train]: [005][00600/00623]  Loss=0.7928  cls_loss=0.3687  reg_loss=0.4240  lr_backbone=1.0e-04  lr_det=5.0e-04  mem=13309MB
+2026-02-11 12:04:05 Train INFO: [Train]: [005][00623/00623]  Loss=0.7907  cls_loss=0.3678  reg_loss=0.4229  lr_backbone=1.0e-04  lr_det=5.0e-04  mem=13309MB
+2026-02-11 12:04:06 Train INFO: [Train]: Epoch 6 started
+2026-02-11 12:12:04 Train INFO: [Train]: [006][00200/00623]  Loss=0.7378  cls_loss=0.3446  reg_loss=0.3931  lr_backbone=9.9e-05  lr_det=5.0e-04  mem=13309MB
+2026-02-11 12:19:46 Train INFO: [Train]: [006][00400/00623]  Loss=0.7569  cls_loss=0.3518  reg_loss=0.4051  lr_backbone=9.9e-05  lr_det=4.9e-04  mem=13309MB
+2026-02-11 12:27:29 Train INFO: [Train]: [006][00600/00623]  Loss=0.7694  cls_loss=0.3585  reg_loss=0.4110  lr_backbone=9.8e-05  lr_det=4.9e-04  mem=13309MB
+2026-02-11 12:28:21 Train INFO: [Train]: [006][00623/00623]  Loss=0.7735  cls_loss=0.3604  reg_loss=0.4131  lr_backbone=9.8e-05  lr_det=4.9e-04  mem=13309MB
+2026-02-11 12:28:23 Train INFO: [Train]: Epoch 7 started
+2026-02-11 12:36:20 Train INFO: [Train]: [007][00200/00623]  Loss=0.7847  cls_loss=0.3663  reg_loss=0.4183  lr_backbone=9.8e-05  lr_det=4.9e-04  mem=13309MB
+2026-02-11 12:44:03 Train INFO: [Train]: [007][00400/00623]  Loss=0.7881  cls_loss=0.3668  reg_loss=0.4214  lr_backbone=9.7e-05  lr_det=4.9e-04  mem=13309MB
+2026-02-11 12:51:46 Train INFO: [Train]: [007][00600/00623]  Loss=0.7905  cls_loss=0.3677  reg_loss=0.4228  lr_backbone=9.7e-05  lr_det=4.8e-04  mem=13309MB
+2026-02-11 12:52:38 Train INFO: [Train]: [007][00623/00623]  Loss=0.7896  cls_loss=0.3673  reg_loss=0.4222  lr_backbone=9.6e-05  lr_det=4.8e-04  mem=13309MB
+2026-02-11 12:52:40 Train INFO: [Train]: Epoch 8 started
+2026-02-11 13:00:35 Train INFO: [Train]: [008][00200/00623]  Loss=0.7768  cls_loss=0.3612  reg_loss=0.4156  lr_backbone=9.6e-05  lr_det=4.8e-04  mem=13309MB
+2026-02-11 13:08:18 Train INFO: [Train]: [008][00400/00623]  Loss=0.7721  cls_loss=0.3584  reg_loss=0.4137  lr_backbone=9.5e-05  lr_det=4.7e-04  mem=13309MB
+2026-02-11 13:16:02 Train INFO: [Train]: [008][00600/00623]  Loss=0.7816  cls_loss=0.3639  reg_loss=0.4177  lr_backbone=9.4e-05  lr_det=4.7e-04  mem=13309MB
+2026-02-11 13:16:54 Train INFO: [Train]: [008][00623/00623]  Loss=0.7803  cls_loss=0.3632  reg_loss=0.4172  lr_backbone=9.4e-05  lr_det=4.7e-04  mem=13309MB
+2026-02-11 13:21:13 Train INFO: Evaluation starts...
+2026-02-11 13:21:42 Train INFO: Loaded annotations from validation subset.
+2026-02-11 13:21:42 Train INFO: Number of ground truth instances: 7271
+2026-02-11 13:21:42 Train INFO: Number of predictions: 946000
+2026-02-11 13:21:42 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 13:21:42 Train INFO: Average-mAP: 37.83 (%)
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.50 is 56.58%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.55 is 53.67%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.60 is 50.13%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.65 is 46.98%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.70 is 43.40%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.75 is 38.62%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.80 is 33.64%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.85 is 27.21%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.90 is 19.32%
+2026-02-11 13:21:42 Train INFO: mAP at tIoU 0.95 is 8.76%
+2026-02-11 13:21:42 Train INFO: [Train]: Epoch 9 started
+2026-02-11 13:29:38 Train INFO: [Train]: [009][00200/00623]  Loss=0.7499  cls_loss=0.3481  reg_loss=0.4018  lr_backbone=9.3e-05  lr_det=4.6e-04  mem=13309MB
+2026-02-11 13:37:21 Train INFO: [Train]: [009][00400/00623]  Loss=0.7635  cls_loss=0.3555  reg_loss=0.4079  lr_backbone=9.2e-05  lr_det=4.6e-04  mem=13309MB
+2026-02-11 13:45:04 Train INFO: [Train]: [009][00600/00623]  Loss=0.7681  cls_loss=0.3571  reg_loss=0.4110  lr_backbone=9.1e-05  lr_det=4.5e-04  mem=13309MB
+2026-02-11 13:45:56 Train INFO: [Train]: [009][00623/00623]  Loss=0.7650  cls_loss=0.3557  reg_loss=0.4093  lr_backbone=9.0e-05  lr_det=4.5e-04  mem=13309MB
+2026-02-11 13:50:15 Train INFO: Evaluation starts...
+2026-02-11 13:50:43 Train INFO: Loaded annotations from validation subset.
+2026-02-11 13:50:43 Train INFO: Number of ground truth instances: 7271
+2026-02-11 13:50:43 Train INFO: Number of predictions: 946000
+2026-02-11 13:50:43 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 13:50:43 Train INFO: Average-mAP: 38.05 (%)
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.50 is 56.93%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.55 is 54.03%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.60 is 50.41%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.65 is 47.30%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.70 is 43.44%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.75 is 38.60%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.80 is 33.85%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.85 is 27.48%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.90 is 19.50%
+2026-02-11 13:50:43 Train INFO: mAP at tIoU 0.95 is 8.93%
+2026-02-11 13:50:44 Train INFO: [Train]: Epoch 10 started
+2026-02-11 13:58:37 Train INFO: [Train]: [010][00200/00623]  Loss=0.7242  cls_loss=0.3362  reg_loss=0.3880  lr_backbone=8.9e-05  lr_det=4.5e-04  mem=13309MB
+2026-02-11 14:06:20 Train INFO: [Train]: [010][00400/00623]  Loss=0.7396  cls_loss=0.3435  reg_loss=0.3961  lr_backbone=8.8e-05  lr_det=4.4e-04  mem=13309MB
+2026-02-11 14:14:02 Train INFO: [Train]: [010][00600/00623]  Loss=0.7345  cls_loss=0.3413  reg_loss=0.3932  lr_backbone=8.7e-05  lr_det=4.3e-04  mem=13309MB
+2026-02-11 14:14:54 Train INFO: [Train]: [010][00623/00623]  Loss=0.7364  cls_loss=0.3423  reg_loss=0.3942  lr_backbone=8.6e-05  lr_det=4.3e-04  mem=13309MB
+2026-02-11 14:19:13 Train INFO: Evaluation starts...
+2026-02-11 14:19:41 Train INFO: Loaded annotations from validation subset.
+2026-02-11 14:19:41 Train INFO: Number of ground truth instances: 7271
+2026-02-11 14:19:41 Train INFO: Number of predictions: 946000
+2026-02-11 14:19:41 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 14:19:41 Train INFO: Average-mAP: 38.07 (%)
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.50 is 56.79%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.55 is 53.83%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.60 is 50.56%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.65 is 47.24%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.70 is 43.53%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.75 is 38.80%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.80 is 33.88%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.85 is 27.24%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.90 is 19.79%
+2026-02-11 14:19:41 Train INFO: mAP at tIoU 0.95 is 9.05%
+2026-02-11 14:19:42 Train INFO: [Train]: Epoch 11 started
+2026-02-11 14:27:38 Train INFO: [Train]: [011][00200/00623]  Loss=0.7399  cls_loss=0.3449  reg_loss=0.3950  lr_backbone=8.5e-05  lr_det=4.3e-04  mem=13309MB
+2026-02-11 14:35:20 Train INFO: [Train]: [011][00400/00623]  Loss=0.7349  cls_loss=0.3428  reg_loss=0.3921  lr_backbone=8.4e-05  lr_det=4.2e-04  mem=13309MB
+2026-02-11 14:43:03 Train INFO: [Train]: [011][00600/00623]  Loss=0.7295  cls_loss=0.3399  reg_loss=0.3896  lr_backbone=8.2e-05  lr_det=4.1e-04  mem=13309MB
+2026-02-11 14:43:55 Train INFO: [Train]: [011][00623/00623]  Loss=0.7307  cls_loss=0.3404  reg_loss=0.3903  lr_backbone=8.2e-05  lr_det=4.1e-04  mem=13309MB
+2026-02-11 14:48:13 Train INFO: Evaluation starts...
+2026-02-11 14:48:41 Train INFO: Loaded annotations from validation subset.
+2026-02-11 14:48:41 Train INFO: Number of ground truth instances: 7271
+2026-02-11 14:48:41 Train INFO: Number of predictions: 946000
+2026-02-11 14:48:41 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 14:48:41 Train INFO: Average-mAP: 38.40 (%)
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.50 is 57.04%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.55 is 54.19%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.60 is 50.75%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.65 is 47.68%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.70 is 43.82%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.75 is 39.27%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.80 is 34.52%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.85 is 27.70%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.90 is 20.00%
+2026-02-11 14:48:41 Train INFO: mAP at tIoU 0.95 is 8.99%
+2026-02-11 14:48:41 Train INFO: [Train]: Epoch 12 started
+2026-02-11 14:56:37 Train INFO: [Train]: [012][00200/00623]  Loss=0.7346  cls_loss=0.3421  reg_loss=0.3924  lr_backbone=8.0e-05  lr_det=4.0e-04  mem=13309MB
+2026-02-11 15:04:19 Train INFO: [Train]: [012][00400/00623]  Loss=0.7305  cls_loss=0.3401  reg_loss=0.3904  lr_backbone=7.9e-05  lr_det=3.9e-04  mem=13309MB
+2026-02-11 15:12:01 Train INFO: [Train]: [012][00600/00623]  Loss=0.7362  cls_loss=0.3425  reg_loss=0.3936  lr_backbone=7.7e-05  lr_det=3.8e-04  mem=13309MB
+2026-02-11 15:12:53 Train INFO: [Train]: [012][00623/00623]  Loss=0.7323  cls_loss=0.3410  reg_loss=0.3913  lr_backbone=7.7e-05  lr_det=3.8e-04  mem=13309MB
+2026-02-11 15:17:16 Train INFO: Evaluation starts...
+2026-02-11 15:17:44 Train INFO: Loaded annotations from validation subset.
+2026-02-11 15:17:44 Train INFO: Number of ground truth instances: 7271
+2026-02-11 15:17:44 Train INFO: Number of predictions: 946000
+2026-02-11 15:17:44 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 15:17:44 Train INFO: Average-mAP: 38.55 (%)
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.50 is 57.11%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.55 is 54.37%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.60 is 50.83%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.65 is 47.85%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.70 is 44.05%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.75 is 39.44%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.80 is 34.57%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.85 is 28.03%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.90 is 20.14%
+2026-02-11 15:17:44 Train INFO: mAP at tIoU 0.95 is 9.15%
+2026-02-11 15:17:45 Train INFO: [Train]: Epoch 13 started
+2026-02-11 15:25:40 Train INFO: [Train]: [013][00200/00623]  Loss=0.7136  cls_loss=0.3322  reg_loss=0.3815  lr_backbone=7.5e-05  lr_det=3.8e-04  mem=13309MB
+2026-02-11 15:33:23 Train INFO: [Train]: [013][00400/00623]  Loss=0.6977  cls_loss=0.3250  reg_loss=0.3727  lr_backbone=7.3e-05  lr_det=3.7e-04  mem=13309MB
+2026-02-11 15:41:05 Train INFO: [Train]: [013][00600/00623]  Loss=0.6982  cls_loss=0.3253  reg_loss=0.3729  lr_backbone=7.2e-05  lr_det=3.6e-04  mem=13309MB
+2026-02-11 15:41:57 Train INFO: [Train]: [013][00623/00623]  Loss=0.6994  cls_loss=0.3258  reg_loss=0.3736  lr_backbone=7.1e-05  lr_det=3.6e-04  mem=13309MB
+2026-02-11 15:46:17 Train INFO: Evaluation starts...
+2026-02-11 15:46:45 Train INFO: Loaded annotations from validation subset.
+2026-02-11 15:46:45 Train INFO: Number of ground truth instances: 7271
+2026-02-11 15:46:45 Train INFO: Number of predictions: 946000
+2026-02-11 15:46:45 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 15:46:45 Train INFO: Average-mAP: 38.73 (%)
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.50 is 57.26%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.55 is 54.42%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.60 is 50.95%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.65 is 47.92%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.70 is 44.36%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.75 is 39.74%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.80 is 34.75%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.85 is 28.42%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.90 is 20.31%
+2026-02-11 15:46:45 Train INFO: mAP at tIoU 0.95 is 9.19%
+2026-02-11 15:46:46 Train INFO: [Train]: Epoch 14 started
+2026-02-11 15:54:43 Train INFO: [Train]: [014][00200/00623]  Loss=0.7198  cls_loss=0.3328  reg_loss=0.3871  lr_backbone=6.9e-05  lr_det=3.5e-04  mem=13309MB
+2026-02-11 16:02:26 Train INFO: [Train]: [014][00400/00623]  Loss=0.7049  cls_loss=0.3259  reg_loss=0.3791  lr_backbone=6.8e-05  lr_det=3.4e-04  mem=13309MB
+2026-02-11 16:10:08 Train INFO: [Train]: [014][00600/00623]  Loss=0.7028  cls_loss=0.3261  reg_loss=0.3767  lr_backbone=6.6e-05  lr_det=3.3e-04  mem=13309MB
+2026-02-11 16:11:00 Train INFO: [Train]: [014][00623/00623]  Loss=0.7034  cls_loss=0.3266  reg_loss=0.3768  lr_backbone=6.5e-05  lr_det=3.3e-04  mem=13309MB
+2026-02-11 16:15:19 Train INFO: Evaluation starts...
+2026-02-11 16:15:47 Train INFO: Loaded annotations from validation subset.
+2026-02-11 16:15:47 Train INFO: Number of ground truth instances: 7271
+2026-02-11 16:15:47 Train INFO: Number of predictions: 946000
+2026-02-11 16:15:47 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 16:15:47 Train INFO: Average-mAP: 38.84 (%)
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.50 is 57.35%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.55 is 54.47%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.60 is 51.09%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.65 is 47.98%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.70 is 44.26%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.75 is 39.80%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.80 is 35.04%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.85 is 28.63%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.90 is 20.50%
+2026-02-11 16:15:47 Train INFO: mAP at tIoU 0.95 is 9.33%
+2026-02-11 16:15:47 Train INFO: [Train]: Epoch 15 started
+2026-02-11 16:23:44 Train INFO: [Train]: [015][00200/00623]  Loss=0.7176  cls_loss=0.3366  reg_loss=0.3810  lr_backbone=6.4e-05  lr_det=3.2e-04  mem=13309MB
+2026-02-11 16:31:26 Train INFO: [Train]: [015][00400/00623]  Loss=0.6866  cls_loss=0.3205  reg_loss=0.3661  lr_backbone=6.2e-05  lr_det=3.1e-04  mem=13309MB
+2026-02-11 16:39:09 Train INFO: [Train]: [015][00600/00623]  Loss=0.6894  cls_loss=0.3205  reg_loss=0.3689  lr_backbone=6.0e-05  lr_det=3.0e-04  mem=13309MB
+2026-02-11 16:40:01 Train INFO: [Train]: [015][00623/00623]  Loss=0.6860  cls_loss=0.3186  reg_loss=0.3674  lr_backbone=5.9e-05  lr_det=3.0e-04  mem=13309MB
+2026-02-11 16:44:19 Train INFO: Evaluation starts...
+2026-02-11 16:44:47 Train INFO: Loaded annotations from validation subset.
+2026-02-11 16:44:47 Train INFO: Number of ground truth instances: 7271
+2026-02-11 16:44:47 Train INFO: Number of predictions: 946000
+2026-02-11 16:44:47 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 16:44:47 Train INFO: Average-mAP: 38.87 (%)
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.50 is 57.32%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.55 is 54.49%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.60 is 51.10%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.65 is 47.95%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.70 is 44.41%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.75 is 39.76%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.80 is 35.02%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.85 is 28.58%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.90 is 20.63%
+2026-02-11 16:44:47 Train INFO: mAP at tIoU 0.95 is 9.46%
+2026-02-11 16:44:48 Train INFO: [Train]: Epoch 16 started
+2026-02-11 16:52:43 Train INFO: [Train]: [016][00200/00623]  Loss=0.6665  cls_loss=0.3075  reg_loss=0.3590  lr_backbone=5.7e-05  lr_det=2.9e-04  mem=13309MB
+2026-02-11 17:00:26 Train INFO: [Train]: [016][00400/00623]  Loss=0.6826  cls_loss=0.3165  reg_loss=0.3662  lr_backbone=5.5e-05  lr_det=2.8e-04  mem=13309MB
+2026-02-11 17:08:09 Train INFO: [Train]: [016][00600/00623]  Loss=0.6936  cls_loss=0.3226  reg_loss=0.3711  lr_backbone=5.3e-05  lr_det=2.7e-04  mem=13309MB
+2026-02-11 17:09:01 Train INFO: [Train]: [016][00623/00623]  Loss=0.6903  cls_loss=0.3211  reg_loss=0.3692  lr_backbone=5.3e-05  lr_det=2.7e-04  mem=13309MB
+2026-02-11 17:13:18 Train INFO: Evaluation starts...
+2026-02-11 17:13:47 Train INFO: Loaded annotations from validation subset.
+2026-02-11 17:13:47 Train INFO: Number of ground truth instances: 7271
+2026-02-11 17:13:47 Train INFO: Number of predictions: 946000
+2026-02-11 17:13:47 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 17:13:47 Train INFO: Average-mAP: 38.86 (%)
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.50 is 57.23%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.55 is 54.43%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.60 is 51.19%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.65 is 47.95%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.70 is 44.43%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.75 is 39.79%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.80 is 34.83%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.85 is 28.77%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.90 is 20.63%
+2026-02-11 17:13:47 Train INFO: mAP at tIoU 0.95 is 9.41%
+2026-02-11 17:13:47 Train INFO: [Train]: Epoch 17 started
+2026-02-11 17:21:45 Train INFO: [Train]: [017][00200/00623]  Loss=0.6751  cls_loss=0.3134  reg_loss=0.3617  lr_backbone=5.1e-05  lr_det=2.6e-04  mem=13309MB
+2026-02-11 17:29:28 Train INFO: [Train]: [017][00400/00623]  Loss=0.6744  cls_loss=0.3131  reg_loss=0.3613  lr_backbone=4.9e-05  lr_det=2.5e-04  mem=13309MB
+2026-02-11 17:37:10 Train INFO: [Train]: [017][00600/00623]  Loss=0.6717  cls_loss=0.3126  reg_loss=0.3591  lr_backbone=4.7e-05  lr_det=2.4e-04  mem=13309MB
+2026-02-11 17:38:02 Train INFO: [Train]: [017][00623/00623]  Loss=0.6707  cls_loss=0.3121  reg_loss=0.3586  lr_backbone=4.7e-05  lr_det=2.3e-04  mem=13309MB
+2026-02-11 17:42:21 Train INFO: Evaluation starts...
+2026-02-11 17:42:49 Train INFO: Loaded annotations from validation subset.
+2026-02-11 17:42:49 Train INFO: Number of ground truth instances: 7271
+2026-02-11 17:42:49 Train INFO: Number of predictions: 946000
+2026-02-11 17:42:49 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 17:42:49 Train INFO: Average-mAP: 38.80 (%)
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.50 is 57.03%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.55 is 54.20%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.60 is 51.06%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.65 is 47.98%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.70 is 44.43%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.75 is 39.71%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.80 is 34.89%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.85 is 28.66%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.90 is 20.66%
+2026-02-11 17:42:49 Train INFO: mAP at tIoU 0.95 is 9.42%
+2026-02-11 17:42:49 Train INFO: [Train]: Epoch 18 started
+2026-02-11 17:50:45 Train INFO: [Train]: [018][00200/00623]  Loss=0.6415  cls_loss=0.2953  reg_loss=0.3462  lr_backbone=4.5e-05  lr_det=2.2e-04  mem=13309MB
+2026-02-11 17:58:27 Train INFO: [Train]: [018][00400/00623]  Loss=0.6469  cls_loss=0.3001  reg_loss=0.3468  lr_backbone=4.3e-05  lr_det=2.1e-04  mem=13309MB
+2026-02-11 18:06:10 Train INFO: [Train]: [018][00600/00623]  Loss=0.6573  cls_loss=0.3040  reg_loss=0.3533  lr_backbone=4.1e-05  lr_det=2.0e-04  mem=13309MB
+2026-02-11 18:07:02 Train INFO: [Train]: [018][00623/00623]  Loss=0.6565  cls_loss=0.3036  reg_loss=0.3530  lr_backbone=4.1e-05  lr_det=2.0e-04  mem=13309MB
+2026-02-11 18:11:20 Train INFO: Evaluation starts...
+2026-02-11 18:11:48 Train INFO: Loaded annotations from validation subset.
+2026-02-11 18:11:48 Train INFO: Number of ground truth instances: 7271
+2026-02-11 18:11:48 Train INFO: Number of predictions: 946000
+2026-02-11 18:11:48 Train INFO: Fixed threshold for tiou score: [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95]
+2026-02-11 18:11:48 Train INFO: Average-mAP: 38.62 (%)
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.50 is 56.76%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.55 is 53.78%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.60 is 50.75%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.65 is 47.87%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.70 is 44.20%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.75 is 39.71%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.80 is 34.57%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.85 is 28.49%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.90 is 20.56%
+2026-02-11 18:11:48 Train INFO: mAP at tIoU 0.95 is 9.46%
+2026-02-11 18:11:49 Train INFO: [Train]: Epoch 19 started
+2026-02-11 18:19:44 Train INFO: [Train]: [019][00200/00623]  Loss=0.6629  cls_loss=0.3042  reg_loss=0.3588  lr_backbone=3.9e-05  lr_det=1.9e-04  mem=13309MB
+2026-02-11 18:27:26 Train INFO: [Train]: [019][00400/00623]  Loss=0.6650  cls_loss=0.3070  reg_loss=0.3580  lr_backbone=3.7e-05  lr_det=1.8e-04  mem=13309MB
+2026-02-11 18:35:09 Train INFO: [Train]: [019][00600/00623]  Loss=0.6541  cls_loss=0.3023  reg_loss=0.3518  lr_backbone=3.5e-05  lr_det=1.7e-04  mem=13309MB
+2026-02-11 18:36:01 Train INFO: [Train]: [019][00623/00623]  Loss=0.6534  cls_loss=0.3022  reg_loss=0.3512  lr_backbone=3.5e-05  lr_det=1.7e-04  mem=13309MB
+2026-02-11 18:40:18 Train INFO: Evaluation starts...
