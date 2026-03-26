@@ -42,6 +42,19 @@ The following table lists the supported datasets and provides links to the corre
 - eg. `python tools/prepare_data/generate_missing_list.py data/fineaction/annotations/annotations_gt.json  data/fineaction/features/fineaction_mae_g`
 - In the provided feature from this codebase, we have already included this txt in the zip file.
 
+## Prepare the pretrained VideoMAE checkpoints
+
+Before running the experiments, please download the pretrained VideoMAE model weights (converted from original repo), and put them under the path `./pretrained/`.
+
+|    Model     | Pretrain Dataset | Finetune Dataset |                                           Original Link                                           |                                                                  Converted Checkpoints                                                                   |
+| :----------: | :--------------: | :--------------: | :-----------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|  VideoMAE-S  |       K400       |       K400       | [Url](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md#:~:text=/log/-,checkpoint,-79.0) |                            [Google Drive](https://drive.google.com/file/d/1BH5BZmdImaZesUfqtW23eBGC341Gui1D/view?usp=sharing)                            |
+|  VideoMAE-B  |       K400       |       K400       | [Url](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md#:~:text=/log/-,checkpoint,-81.5) | [mmaction2](https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-base-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-860a3cd3.pth)  |
+|  VideoMAE-L  |       K400       |       K400       | [Url](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md#:~:text=/log/-,checkpoint,-85.2) | [mmaction2](https://download.openmmlab.com/mmaction/v1.0/recognition/videomae/vit-large-p16_videomae-k400-pre_16x4x1_kinetics-400_20221013-229dbb03.pth) |
+|  VideoMAE-H  |       K400       |       K400       | [Url](https://github.com/MCG-NJU/VideoMAE/blob/main/MODEL_ZOO.md#:~:text=/log/-,checkpoint,-86.6) |                            [Google Drive](https://drive.google.com/file/d/1wWXs7xpkVkQ2cJnvRVKnWZ86QswZC1UI/view?usp=sharing)                            |
+| VideoMAEv2-g |      Hybrid      |       K710       |           [Url](https://github.com/OpenGVLab/VideoMAEv2/blob/master/docs/MODEL_ZOO.md)            |                                                                       Not Provided
+
+
 ## Usage
 
 By default, we use DistributedDataParallel (DDP) both in single GPU and multiple GPU cases for simplicity.
