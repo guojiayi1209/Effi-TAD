@@ -1,11 +1,11 @@
 # Installation
 
-**Step 1.** Install PyTorch=2.0.1, Python=3.10.12
+**Step 1.** Install PyTorch=2.0.0, Python=3.8.20
 
 ```
-conda create -n opentad python=3.10.12
+conda create -n opentad python=3.8.20
 source activate opentad
-conda install pytorch=2.0.1 torchvision=0.15.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+conda install pytorch=2.0.0 torchvision=0.15.2 pytorch-cuda=11.8 -c pytorch -c nvidia
 ```
 
 **Step 2.** Install mmaction2 for end-to-end training
